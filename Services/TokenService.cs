@@ -8,7 +8,7 @@ namespace UsuariosApi.Services
 {
     public class TokenService
     {
-        public void GenerateToken(Usuario usuario)
+        public string GenerateToken(Usuario usuario)
         {
             Claim[] claims = new Claim[]
             {
@@ -18,7 +18,7 @@ namespace UsuariosApi.Services
             };
 
             var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("AOSIAIJSJIQW1982198291029012"));
-            var signingCredentials = new SigningCredentials(chave,SecurityAlgorithms.HmacSha256);
+            var signingCredentials = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken
                 (
@@ -26,6 +26,8 @@ namespace UsuariosApi.Services
                   claims: claims,
                   signingCredentials: signingCredentials
                 );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
     }
