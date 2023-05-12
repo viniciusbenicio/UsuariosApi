@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UsuariosApi.Data.Dtos;
-using UsuariosApi.Models;
 using UsuariosApi.Services;
 
 namespace UsuariosApi.Controllers
@@ -13,25 +11,25 @@ namespace UsuariosApi.Controllers
     {
         private UsuarioService _usuarioService;
 
-        public UsuarioController(UsuarioService usuarioService)
+        public UsuarioController(UsuarioService cadastroService)
         {
-            _usuarioService = usuarioService;
+            _usuarioService = cadastroService;
         }
 
         [HttpPost("cadastro")]
-        public async Task<IActionResult> CadastraUsuario(CreateUsuarioDto dto)
+        public async Task<IActionResult> CadastraUsuario
+            (CreateUsuarioDto dto)
         {
-            await _usuarioService.Cadastrar(dto);
-            return Ok("Usuário Cadastrado com sucesso.");
+            await _usuarioService.CadastraUsuario(dto);
+            return Ok("Usuário cadastrado!");
 
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUsuarioDto dto)
+        public async Task<IActionResult> LoginAsync(LoginUsuarioDto dto)
         {
             var token = await _usuarioService.Login(dto);
             return Ok(token);
         }
-
     }
 }

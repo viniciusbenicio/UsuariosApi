@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using UsuariosApi.Data.Dtos;
 using UsuariosApi.Models;
@@ -20,8 +23,7 @@ namespace UsuariosApi.Services
             _tokenService = tokenService;
         }
 
-
-        public async Task Cadastrar(CreateUsuarioDto dto)
+        public async Task CadastraUsuario(CreateUsuarioDto dto)
         {
             Usuario usuario = _mapper.Map<Usuario>(dto);
 
@@ -29,26 +31,28 @@ namespace UsuariosApi.Services
 
             if (!resultado.Succeeded)
             {
-                throw new ApplicationException("Falha ao cadastrar Usuário.");
+                throw new ApplicationException("Falha ao cadastrar usuário!");
             }
-
         }
 
         public async Task<string> Login(LoginUsuarioDto dto)
         {
-            var resultado = await _signInManager.PasswordSignInAsync(dto.userName, dto.password, false, false);
-            var usuario = _signInManager.UserManager.Users.FirstOrDefault(user => user.NormalizedUserName == dto.userName.ToUpper());
-            var token = _tokenService.GenerateToken(usuario);
-
+            var resultado = await _signInManager.PasswordSignInAsync(dto.userName, dto.password , false, false);
 
             if (!resultado.Succeeded)
             {
                 throw new ApplicationException("Usuário não autenticado!");
             }
 
+            var usuario = _signInManager
+                .UserManager
+                .Users
+                .FirstOrDefault(user => user.NormalizedUserName == dto.userName.ToUpper());
+
+            var token = _tokenService.GenerateToken(usuario);
+
             return token;
+
         }
-
-
     }
 }

@@ -19,22 +19,19 @@ builder.Services.AddDbContext<UsuarioDbContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("UsuarioConnection"));
 });
 
-builder.Services.AddIdentity<Usuario, IdentityRole>()
-                .AddEntityFrameworkStores<UsuarioDbContext>()
-                .AddDefaultTokenProviders();
+builder.Services
+    .AddIdentity<Usuario, IdentityRole>()
+    .AddEntityFrameworkStores<UsuarioDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSingleton<IAuthorizationHandler, IdadeAuthorization>();
 
-builder.Services.AddScoped<UsuarioService>();
-builder.Services.AddScoped<TokenService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -45,7 +42,7 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("AOSIAIJSJIQW1982198291029012")),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("9ASHDA98H9ah9ha9H9A89n0f")),
         ValidateAudience = false,
         ValidateIssuer = false,
         ClockSkew = TimeSpan.Zero
@@ -55,10 +52,12 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("IdadeMinima", policy =>
-    policy.AddRequirements(new IdadeMinima(18))
+         policy.AddRequirements(new IdadeMinima(18))
     );
-
 });
+
+builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 
@@ -70,9 +69,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
